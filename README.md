@@ -2,6 +2,44 @@
 
 [English] [<a href="README_ja.md">日本語</a>]
 
+## Changes in This Fork
+
+### Overview
+- Fixed the `'PixArtTokenizer' object has no attribute 'clip_l'` error that occurs when using [SendToEagleWithMetadata] node with new text encoder models like Chroma.
+
+### Cause
+- The error occurs when using models that utilize `pixart_t5` text encoder, as the original code didn't support `PixArtTokenizer`.
+
+### Modifications
+1. **Added import statement**  
+from comfy.text_encoders.pixart_t5 import PixArtTokenizer
+(Added near the top of `formatters.py`)
+
+2. **Modified `_extract_embedding_names` function**  
+- Added conditional check for `PixArtTokenizer` in input data
+- Properly set `clip` property when PixArtTokenizer is detected
+- Modified existing `SD1Tokenizer` check to `elif` clause
+
+### Operation Notes
+- This fix has only been verified in a personal development environment
+- Comprehensive testing has not been performed
+- Please report any issues through GitHub Issues or Pull Requests
+
+### License
+This project remains licensed under [GPL-3.0 License](LICENSE).
+
+This repository is a fork of [ComfyUI-SendToEagle-w-Metadata](https://github.com/watarika/ComfyUI-SendToEagle-w-Metadata) by @watarika.
+---
+
+### Acknowledgements
+- Special thanks to the original author for creating this excellent tool.  
+
+- **Important Notes:**
+- Original copyright notices and license documentation remain intact
+- This modification constitutes an extension of the existing metadata extraction system
+- GPL-3.0 compliance has been maintained throughout the modification process
+
+
 - A custom node for [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
 - Sends images with metadata (PNGInfo) obtained from the input values of each node to [Eagle](https://en.eagle.cool/) (image management software)
 - You can also add arbitrary `Key:Value` pairs to the metadata

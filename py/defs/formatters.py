@@ -11,6 +11,8 @@ from comfy.text_encoders.sd2_clip import SD2Tokenizer
 from comfy.text_encoders.sd3_clip import SD3Tokenizer
 from comfy.text_encoders.flux import FluxTokenizer
 from comfy.sdxl_clip import SDXLTokenizer
+# Add PixArtTokenizer import
+from comfy.text_encoders.pixart_t5 import PixArtTokenizer
 
 cache_model_hash = {}
 
@@ -74,7 +76,9 @@ def _extract_embedding_names(text, input_data):
     clip = None
     if clip_ is not None:
         tokenizer = clip_.tokenizer
-        if isinstance(tokenizer, SD1Tokenizer):
+        if isinstance(tokenizer, PixArtTokenizer):  # PixArtTokenizer added at the first
+            clip = tokenizer.clip
+        elif isinstance(tokenizer, SD1Tokenizer):
             clip = tokenizer.clip_l
         elif isinstance(tokenizer, SD2Tokenizer):
             clip = tokenizer.clip_h

@@ -2,6 +2,44 @@
 
 [<a href="README.md">English</a>] [日本語]
 
+## このフォークでの変更点
+- Chroma等の新しいモデル（テキストエンコーダー）利用時に発生する `'PixArtTokenizer' object has no attribute 'clip_l'` エラーに対応
+- ComfyUI-SendToEagle-w-Metadata\py\defs\formatters.py の修正内容を記載
+- 動作確認は個人環境のみ、十分なテストは未実施
+
+
+### 概要
+- [SendToEagleWithMetadata] ノード使用時に、'PixArtTokenizer' object has no attribute 'clip_l' というエラーが発生する場合があります。
+
+### 原因
+- Chromaなどの新しいモデルを利用した際、テキストエンコーダーとして pixart_t5 が使われることがあります。しかし、従来のコードは PixArtTokenizer に対応していないため、このエラーが発生します。
+
+### 修正内容
+1. **import文の追加**  
+from comfy.text_encoders.pixart_t5 import PixArtTokenizer
+（`formatters.py`の先頭付近に追加）
+
+2. **`_extract_embedding_names`関数の修正**  
+- 入力データ内の`PixArtTokenizer`に対する条件分岐の追加
+- PixArtTokenizerを検出した際に`clip`プロパティを適切に設定
+- 既存のSD1Tokenizerチェックを`elif`節に変更
+
+
+### 動作について
+- この修正は個人環境で動作確認したものであり、十分なテストは行えていません。
+- もし問題や誤りがあればご指摘いただけると助かります。
+
+### ライセンス
+- このプロジェクトは GPL-3.0ライセンス の下で公開されています。
+- 本リポジトリは [ComfyUI-SendToEagle-w-Metadata](https://github.com/watarika/ComfyUI-SendToEagle-w-Metadata)をベースに、新モデル対応を追加したものです。
+
+### 補足：
+- 製作者のwatarika様に大変感謝しております。
+- 今回の修正は、既存のメタデータ抽出処理の拡張となります。
+- 元リポジトリの著作権表示やライセンス表記はそのまま残し、READMEにも元プロジェクト名・修正内容を明記してください（GPL-3.0の遵守）。
+
+
+
 - [ComfyUI](https://github.com/comfyanonymous/ComfyUI) 用のカスタムノードです
 - 各ノードの入力値から取得したメタデータ (PNGInfo) つきの画像を [Eagle](https://jp.eagle.cool/) (画像管理ソフト) に送信します
 - 任意の `Key:Value` をメタデータに追加することもできます
